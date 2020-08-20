@@ -18,8 +18,8 @@ namespace ConstructionLine.CodingChallenge
                 {
                     _groupedShirts.Add(new GroupedShirts()
                     {
-                        Color = color,
-                        Size = size,
+                        ColorId = color.Id,
+                        SizeId = size.Id,
                         Shirts = shirts.Where(s => s.Size.Id == size.Id && s.Color.Id == color.Id)
                     });
                 }
@@ -34,6 +34,9 @@ namespace ConstructionLine.CodingChallenge
             if (!options.Colors.Any())
                 options.Colors = Color.All;
 
+            var optionColorIds = options.Colors.Select(c => c.Id);
+            var optionSizeIds = options.Sizes.Select(c => c.Id);
+
             var searchResults = new SearchResults()
             {
                 Shirts = new List<Shirt>(),
@@ -45,7 +48,7 @@ namespace ConstructionLine.CodingChallenge
             {
                 foreach (var sizeOption in options.Sizes)
                 {
-                    var matchedShirts = _groupedShirts.FirstOrDefault(s => s.Color == colorOption && s.Size == sizeOption);
+                    var matchedShirts = _groupedShirts.FirstOrDefault(s => s.ColorId == colorOption.Id && s.SizeId == sizeOption.Id);
                     searchResults.Shirts.AddRange(matchedShirts.Shirts);
                 }
             }
@@ -55,7 +58,7 @@ namespace ConstructionLine.CodingChallenge
                 searchResults.SizeCounts.Add(new SizeCount()
                 {
                     Size = size,
-                    Count = _groupedShirts.Where(s => s.Size == size && options.Colors.Contains(s.Color)).SelectMany(g => g.Shirts).Count()
+                    Count = _groupedShirts.Where(s => s.SizeId == size.Id && optionColorIds.Contains(s.ColorId)).SelectMany(g => g.Shirts).Count()
                 });
             }
 
@@ -64,19 +67,11 @@ namespace ConstructionLine.CodingChallenge
                 searchResults.ColorCounts.Add(new ColorCount()
                 {
                     Color = color,
-                    Count = _groupedShirts.Where(s => s.Color == color && options.Sizes.Contains(s.Size)).SelectMany(g => g.Shirts).Count()
+                    Count = _groupedShirts.Where(s => s.ColorId == color.Id && optionSizeIds.Contains(s.SizeId)).SelectMany(g => g.Shirts).Count()
                 });
             }
 
             return searchResults;
         }
-    }
-
-    public class GroupedShirts
-    {
-        public Color Color { get; set; }
-        public Size Size { get; set; }
-        public IEnumerable<Shirt> Shirts { get; set; }
-
     }
 }
