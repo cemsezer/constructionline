@@ -58,6 +58,7 @@ namespace ConstructionLine.CodingChallenge.Tests
             var results = searchEngine.Search(searchOptions);
 
             // Assert
+            Assert.AreEqual(results.Shirts.Count, 0);
             AssertResults(results.Shirts, searchOptions);
             AssertSizeCounts(shirts, searchOptions, results.SizeCounts);
             AssertColorCounts(shirts, searchOptions, results.ColorCounts);
@@ -82,6 +83,7 @@ namespace ConstructionLine.CodingChallenge.Tests
             var results = searchEngine.Search(searchOptions);
 
             // Assert
+            Assert.AreEqual(results.Shirts.Count, shirts.Count);
             AssertResults(results.Shirts, searchOptions);
             AssertSizeCounts(shirts, searchOptions, results.SizeCounts);
             AssertColorCounts(shirts, searchOptions, results.ColorCounts);
